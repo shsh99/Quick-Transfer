@@ -1,0 +1,6 @@
+rootProject.name = 'quick-transfer'
+
+include 'common'
+include 'account-service'
+include 'transfer-service'
+include 'notification-service'
