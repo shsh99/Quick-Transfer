@@ -11,6 +11,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/accounts")
 @RequiredArgsConstructor
@@ -23,6 +25,14 @@ public class AccountController {
     public ApiResponse<AccountResponse> createAccount(@RequestBody CreateAccountRequest request) {
         Account account = accountService.createAccount(request.ownerName());
         return ApiResponse.ok(AccountResponse.from(account));
+    }
+
+    @GetMapping
+    public ApiResponse<List<AccountResponse>> getAllAccounts() {
+        List<AccountResponse> accounts = accountService.getAllAccounts().stream()
+                .map(AccountResponse::from)
+                .toList();
+        return ApiResponse.ok(accounts);
     }
 
     @GetMapping("/{accountNumber}")

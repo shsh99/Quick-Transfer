@@ -4,6 +4,9 @@ import type { ApiResponse, Account, TransactionLog } from '../types/api'
 export const createAccount = (ownerName: string) =>
   api.post<ApiResponse<Account>>('/accounts', { ownerName })
 
+export const getAllAccounts = () =>
+  api.get<ApiResponse<Account[]>>('/accounts')
+
 export const getAccount = (accountNumber: string) =>
   api.get<ApiResponse<Account>>(`/accounts/${accountNumber}`)
 

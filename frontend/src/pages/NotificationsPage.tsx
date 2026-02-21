@@ -30,35 +30,80 @@ function NotificationsPage() {
   }, [])
 
   return (
-    <div>
-      <h2 style={{ marginBottom: 20 }}>실시간 알림</h2>
+    <div className="animate-fade">
+      <p className="page-title">알림</p>
+
+      {/* 구독 카드 */}
       <div className="card">
-        <input
-          placeholder="구독할 계좌번호"
-          value={accountNumber}
-          onChange={e => setAccountNumber(e.target.value)}
-        />
-        <button className="btn btn-primary" onClick={handleSubscribe}>
-          {connected ? '구독중' : 'SSE 구독'}
+        <div className="flex items-center justify-between mb-8">
+          <span className="section-title" style={{ margin: 0 }}>실시간 알림</span>
+          {connected && (
+            <span className="badge badge-success">
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', display: 'inline-block' }} />
+              연결됨
+            </span>
+          )}
+        </div>
+        <div className="input-group">
+          <label>계좌번호</label>
+          <input
+            placeholder="알림을 받을 계좌번호"
+            value={accountNumber}
+            onChange={e => setAccountNumber(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSubscribe()}
+          />
+        </div>
+        <button
+          className={`btn ${connected ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={handleSubscribe}
+        >
+          {connected ? '다른 계좌로 변경' : 'SSE 구독 시작'}
         </button>
-        {connected && <span style={{ marginLeft: 8, color: '#10b981' }}>연결됨</span>}
       </div>
 
-      {notifications.length === 0 && <div className="card" style={{ color: '#888' }}>알림이 없습니다</div>}
+      {/* 알림 목록 */}
+      {notifications.length > 0 && (
+        <p className="section-title mt-16">알림 내역</p>
+      )}
 
-      {notifications.map((n, i) => (
-        <div className="card" key={i}>
-          <div style={{ fontWeight: 600, marginBottom: 4,
-            color: n.type === 'TRANSFER_COMPLETED' ? '#10b981' : '#ef4444'
-          }}>
-            {n.type === 'TRANSFER_COMPLETED' ? '송금 완료' : '송금 실패'}
+      {notifications.map((n, i) => {
+        const isSuccess = n.type === 'TRANSFER_COMPLETED'
+        return (
+          <div className="notification-card" key={i}>
+            <div className="list-icon" style={{
+              background: isSuccess ? 'var(--success-bg)' : 'var(--danger-bg)',
+              fontSize: 18,
+            }}>
+              {isSuccess ? '✅' : '❌'}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="flex justify-between items-center">
+                <span style={{ fontWeight: 700, fontSize: 14, color: isSuccess ? 'var(--success)' : 'var(--danger)' }}>
+                  {isSuccess ? '송금 완료' : '송금 실패'}
+                </span>
+                <span className="text-sm text-muted">
+                  {new Date(n.timestamp).toLocaleTimeString('ko-KR')}
+                </span>
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--gray-700)', marginTop: 4 }}>
+                {n.message}
+              </div>
+              <div className="text-sm text-muted" style={{ marginTop: 4 }}>
+                {n.senderAccount} → {n.receiverAccount} · {Number(n.amount).toLocaleString()}원
+              </div>
+            </div>
           </div>
-          <div>{n.message}</div>
-          <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-            {new Date(n.timestamp).toLocaleString('ko-KR')}
-          </div>
+        )
+      })}
+
+      {/* 빈 상태 */}
+      {notifications.length === 0 && (
+        <div className="empty-state">
+          <div className="icon">🔔</div>
+          <div className="title">알림이 없습니다</div>
+          <div className="desc">{connected ? '송금이 발생하면 여기에 표시됩니다' : '계좌번호를 입력하고 구독을 시작하세요'}</div>
         </div>
-      ))}
+      )}
     </div>
   )
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,6 +39,11 @@ public class AccountService {
                 .build();
 
         return accountRepository.save(account);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
     @Transactional(readOnly = true)
