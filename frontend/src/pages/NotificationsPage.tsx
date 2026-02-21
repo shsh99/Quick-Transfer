@@ -1,33 +1,14 @@
-import { useState, useEffect, useRef } from 'react'
-import type { Notification } from '../types/api'
+import { useState } from 'react'
+import { useNotifications } from '../context/NotificationContext'
 
 function NotificationsPage() {
-  const [accountNumber, setAccountNumber] = useState('')
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [connected, setConnected] = useState(false)
-  const eventSourceRef = useRef<EventSource | null>(null)
+  const { accountNumber: subscribedAccount, notifications, connected, subscribe } = useNotifications()
+  const [inputAccount, setInputAccount] = useState(subscribedAccount)
 
   const handleSubscribe = () => {
-    if (!accountNumber.trim()) return
-    if (eventSourceRef.current) eventSourceRef.current.close()
-
-    const es = new EventSource(`/api/notifications/${accountNumber}/subscribe`)
-    eventSourceRef.current = es
-
-    es.onopen = () => setConnected(true)
-    es.onmessage = (event) => {
-      const notification: Notification = JSON.parse(event.data)
-      setNotifications(prev => [notification, ...prev])
-    }
-    es.onerror = () => {
-      setConnected(false)
-      es.close()
-    }
+    if (!inputAccount.trim()) return
+    subscribe(inputAccount)
   }
-
-  useEffect(() => {
-    return () => { eventSourceRef.current?.close() }
-  }, [])
 
   return (
     <div className="animate-fade">
@@ -48,8 +29,8 @@ function NotificationsPage() {
           <label>계좌번호</label>
           <input
             placeholder="알림을 받을 계좌번호"
-            value={accountNumber}
-            onChange={e => setAccountNumber(e.target.value)}
+            value={inputAccount}
+            onChange={e => setInputAccount(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSubscribe()}
           />
         </div>

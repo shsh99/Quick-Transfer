@@ -8,7 +8,10 @@ export default defineConfig({
     proxy: {
       '/api/accounts': 'http://localhost:8081',
       '/api/transfers': 'http://localhost:8082',
-      '/api/notifications': 'http://localhost:8083',
+      '/api/notifications': {
+        target: 'http://localhost:8083',
+        headers: { 'Accept': 'text/event-stream' },
+      },
     },
   },
 })
