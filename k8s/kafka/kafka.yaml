@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qt-zookeeper
+  namespace: quick-transfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qt-zookeeper
+  template:
+    metadata:
+      labels:
+        app: qt-zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: confluentinc/cp-zookeeper:7.7.0
+          ports:
+            - containerPort: 2181
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2181"
+            - name: ZOOKEEPER_TICK_TIME
+              value: "2000"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "400m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qt-zookeeper
+  namespace: quick-transfer
+spec:
+  selector:
+    app: qt-zookeeper
+  ports:
+    - port: 2181
+      targetPort: 2181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qt-kafka
+  namespace: quick-transfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qt-kafka
+  template:
+    metadata:
+      labels:
+        app: qt-kafka
+    spec:
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.7.0
+          ports:
+            - containerPort: 9092
+          env:
+            - name: KAFKA_BROKER_ID
+              value: "1"
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: "qt-zookeeper:2181"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://qt-kafka:9092"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "300m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qt-kafka
+  namespace: quick-transfer
+spec:
+  selector:
+    app: qt-kafka
+  ports:
+    - port: 9092
+      targetPort: 9092
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qt-redis
+  namespace: quick-transfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qt-redis
+  template:
+    metadata:
+      labels:
+        app: qt-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qt-redis
+  namespace: quick-transfer
+spec:
+  selector:
+    app: qt-redis
+  ports:
+    - port: 6379
+      targetPort: 6379

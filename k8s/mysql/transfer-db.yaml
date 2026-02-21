@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qt-mysql-transfer
+  namespace: quick-transfer
+spec:
+  serviceName: qt-mysql-transfer
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qt-mysql-transfer
+  template:
+    metadata:
+      labels:
+        app: qt-mysql-transfer
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: qt-secret
+                  key: DB_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              value: "transfer_db"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: qt-secret
+                  key: DB_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: qt-secret
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qt-mysql-transfer
+  namespace: quick-transfer
+spec:
+  selector:
+    app: qt-mysql-transfer
+  ports:
+    - port: 3306
+      targetPort: 3306
+  clusterIP: None

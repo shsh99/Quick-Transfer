@@ -1,0 +1,165 @@
+version: '3.8'
+
+services:
+  # --- Infrastructure ---
+  mysql-account:
+    image: mysql:8.0
+    container_name: qt-mysql-account
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: account_db
+      MYSQL_USER: qt_user
+      MYSQL_PASSWORD: qt_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-account-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qt-network
+
+  mysql-transfer:
+    image: mysql:8.0
+    container_name: qt-mysql-transfer
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: transfer_db
+      MYSQL_USER: qt_user
+      MYSQL_PASSWORD: qt_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-transfer-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qt-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: qt-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - qt-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.0
+    container_name: qt-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - qt-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: qt-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qt-network
+
+  # --- Microservices ---
+  account-service:
+    build:
+      context: .
+      dockerfile: account-service/Dockerfile
+    container_name: qt-account-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-account:3306/account_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: qt_user
+      SPRING_DATASOURCE_PASSWORD: qt_password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      mysql-account:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - qt-network
+
+  transfer-service:
+    build:
+      context: .
+      dockerfile: transfer-service/Dockerfile
+    container_name: qt-transfer-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-transfer:3306/transfer_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: qt_user
+      SPRING_DATASOURCE_PASSWORD: qt_password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      mysql-transfer:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - qt-network
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: qt-notification-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - redis
+      - kafka
+    networks:
+      - qt-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qt-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - account-service
+      - transfer-service
+      - notification-service
+    networks:
+      - qt-network
+
+volumes:
+  mysql-account-data:
+  mysql-transfer-data:
+
+networks:
+  qt-network:
+    driver: bridge

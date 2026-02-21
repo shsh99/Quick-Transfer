@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qt-config
+  namespace: quick-transfer
+data:
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_SHOW_SQL: "false"
+  SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: "earliest"
+  ACCOUNT_DB_URL: "jdbc:mysql://qt-mysql-account:3306/account_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul"
+  TRANSFER_DB_URL: "jdbc:mysql://qt-mysql-transfer:3306/transfer_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul"
+  KAFKA_BOOTSTRAP_SERVERS: "qt-kafka:9092"
+  REDIS_HOST: "qt-redis"
