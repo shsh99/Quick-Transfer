@@ -48,13 +48,17 @@ function TransferPage() {
   const formattedAmount = form.amount ? Number(form.amount).toLocaleString() : '0'
 
   return (
-    <div className="animate-fade">
-      <p className="page-title">송금</p>
+    <div className="page-enter">
+      <header className="page-header">
+        <h1 className="page-header__greeting">송금</h1>
+      </header>
 
-      {/* 금액 표시 */}
-      <div className="card-hero" style={{ textAlign: 'center' }}>
-        <div className="label">보내는 금액</div>
-        <div className="balance">{formattedAmount}원</div>
+      {/* 금액 표시 히어로 */}
+      <div className="hero-card hero-card--center">
+        <div className="hero-card__label">보내는 금액</div>
+        <div className="hero-card__amount">
+          {formattedAmount}<span className="currency">원</span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -82,12 +86,10 @@ function TransferPage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 16px' }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: '#e8f0fe', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', fontSize: 16,
-            }}>↓</div>
+          <div className="transfer-direction">
+            <div className="transfer-direction__icon">
+              <span className="css-icon icon-arrow-down" />
+            </div>
           </div>
 
           <div className="input-group">
@@ -124,29 +126,35 @@ function TransferPage() {
                 const v = e.target.value.replaceAll(/\D/g, '')
                 setForm({ ...form, amount: v })
               }}
-              style={{ fontSize: 18, fontWeight: 700 }}
+              className="input-amount"
             />
+          </div>
+
+          {/* 금액 프리셋 */}
+          <div className="amount-presets">
+            {[10000, 50000, 100000, 500000].map(v => (
+              <button
+                key={v}
+                type="button"
+                className="amount-preset"
+                onClick={() => setForm({ ...form, amount: String(v) })}
+              >
+                +{(v / 10000)}만
+              </button>
+            ))}
           </div>
         </div>
 
         {error && (
-          <div className="card animate-slide" style={{
-            background: 'var(--danger-bg)',
-            color: 'var(--danger)',
-            fontSize: 14,
-            fontWeight: 600,
-          }}>
-            {error}
-          </div>
+          <div className="alert alert--danger">{error}</div>
         )}
 
         <button
           type="submit"
-          className="btn btn-primary"
+          className={`btn btn-primary${loading ? ' btn-loading' : ''}`}
           disabled={loading}
-          style={{ opacity: loading ? 0.7 : 1 }}
         >
-          {loading ? '송금 처리중...' : '송금하기'}
+          {loading ? '송금 처리중' : '송금하기'}
         </button>
       </form>
     </div>

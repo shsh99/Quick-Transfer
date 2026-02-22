@@ -51,69 +51,84 @@ function DashboardPage() {
   const totalBalance = accounts.reduce((sum, a) => sum + Number(a.balance), 0)
 
   return (
-    <div className="animate-fade">
-      <p className="page-title">내 자산</p>
+    <div className="page-enter">
+      <header className="page-header">
+        <h1 className="page-header__greeting">내 자산</h1>
+        {accounts.length > 0 && (
+          <p className="page-header__subtitle">총 {accounts.length}개의 계좌</p>
+        )}
+      </header>
 
       {/* 총 자산 히어로 카드 */}
-      <div className="card-hero">
-        <div className="label">총 자산</div>
-        <div className="balance">{totalBalance.toLocaleString()}원</div>
-        <div className="account-number">계좌 {accounts.length}개</div>
+      <div className="hero-card">
+        <div className="hero-card__label">총 자산</div>
+        <div className="hero-card__amount">
+          {totalBalance.toLocaleString()}<span className="currency">원</span>
+        </div>
+        <div className="hero-card__sub">계좌 {accounts.length}개 보유</div>
       </div>
 
       {/* 빠른 액션 */}
       <div className="quick-actions">
         <button className="quick-action" onClick={() => setShowCreate(true)}>
-          <span className="icon" style={{ background: '#e8f0fe' }}>🏦</span>
+          <span className="icon-circle icon-circle--primary">
+            <span className="css-icon icon-bank" />
+          </span>
           <span className="text">계좌 개설</span>
         </button>
         <Link to="/transfer" className="quick-action">
-          <span className="icon" style={{ background: '#e8faf0' }}>💸</span>
+          <span className="icon-circle icon-circle--success">
+            <span className="css-icon icon-send" />
+          </span>
           <span className="text">송금</span>
         </Link>
         <button className="quick-action" onClick={() => setShowSearch(true)}>
-          <span className="icon" style={{ background: '#fff8e6' }}>🔍</span>
+          <span className="icon-circle icon-circle--warning">
+            <span className="css-icon icon-search" />
+          </span>
           <span className="text">계좌 조회</span>
         </button>
       </div>
 
-      {/* 계좌 개설 모달 */}
+      {/* 계좌 개설 바텀시트 */}
       {showCreate && (
-        <div className="card animate-slide">
-          <div className="flex justify-between items-center mb-8">
-            <span className="section-title" style={{ margin: 0 }}>새 계좌 개설</span>
-            <button className="btn btn-sm btn-outline" onClick={() => setShowCreate(false)}>닫기</button>
+        <div className="modal-overlay" onClick={() => setShowCreate(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-handle" />
+            <h2 className="modal-title">새 계좌 개설</h2>
+            <div className="input-group">
+              <label>예금주명</label>
+              <input
+                placeholder="이름을 입력하세요"
+                value={ownerName}
+                onChange={e => setOwnerName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleCreate()}
+                autoFocus
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleCreate}>계좌 개설하기</button>
           </div>
-          <div className="input-group">
-            <label>예금주명</label>
-            <input
-              placeholder="이름을 입력하세요"
-              value={ownerName}
-              onChange={e => setOwnerName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleCreate()}
-            />
-          </div>
-          <button className="btn btn-primary" onClick={handleCreate}>계좌 개설하기</button>
         </div>
       )}
 
-      {/* 계좌 조회 모달 */}
+      {/* 계좌 조회 바텀시트 */}
       {showSearch && (
-        <div className="card animate-slide">
-          <div className="flex justify-between items-center mb-8">
-            <span className="section-title" style={{ margin: 0 }}>계좌 조회</span>
-            <button className="btn btn-sm btn-outline" onClick={() => setShowSearch(false)}>닫기</button>
+        <div className="modal-overlay" onClick={() => setShowSearch(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-handle" />
+            <h2 className="modal-title">계좌 조회</h2>
+            <div className="input-group">
+              <label>계좌번호</label>
+              <input
+                placeholder="예: 1000-0001"
+                value={searchNumber}
+                onChange={e => setSearchNumber(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                autoFocus
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleSearch}>조회하기</button>
           </div>
-          <div className="input-group">
-            <label>계좌번호</label>
-            <input
-              placeholder="예: 1000-0001"
-              value={searchNumber}
-              onChange={e => setSearchNumber(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            />
-          </div>
-          <button className="btn btn-primary" onClick={handleSearch}>조회하기</button>
         </div>
       )}
 
@@ -123,13 +138,15 @@ function DashboardPage() {
           <p className="section-title">내 계좌</p>
           {accounts.map(account => (
             <div className="list-item" key={account.accountNumber}>
-              <div className="list-icon" style={{ background: '#e8f0fe' }}>🏦</div>
+              <div className="account-avatar">
+                {account.ownerName.charAt(0)}
+              </div>
               <div className="list-content">
                 <div className="title">{account.ownerName}</div>
                 <div className="subtitle">{account.accountNumber}</div>
               </div>
               <div className="list-trailing">
-                <div className="amount" style={{ color: '#191f28' }}>
+                <div className="amount">
                   {Number(account.balance).toLocaleString()}원
                 </div>
                 <div className="text-sm text-muted">
@@ -141,27 +158,34 @@ function DashboardPage() {
         </div>
       )}
 
-      {/* 로딩 상태 */}
+      {/* 로딩 상태 - 스켈레톤 */}
       {loadingAccounts && accounts.length === 0 && (
-        <div className="card" style={{ textAlign: 'center', padding: 40 }}>
-          <div className="animate-pulse" style={{ fontSize: 32 }}>🏦</div>
-          <p className="text-muted mt-8">계좌 정보를 불러오는 중...</p>
+        <div className="card">
+          <div className="skeleton skeleton--text" />
+          <div className="skeleton skeleton--heading" />
+          <div className="flex items-center gap-3 mt-4">
+            <div className="skeleton skeleton--avatar" />
+            <div className="flex-col" style={{ flex: 1 }}>
+              <div className="skeleton skeleton--text" />
+              <div className="skeleton skeleton--text" style={{ width: '40%' }} />
+            </div>
+          </div>
         </div>
       )}
 
       {/* 빈 상태 */}
       {!loadingAccounts && accounts.length === 0 && !showCreate && !showSearch && (
         <div className="empty-state">
-          <div className="icon">💳</div>
-          <div className="title">등록된 계좌가 없습니다</div>
-          <div className="desc">계좌를 개설하거나 기존 계좌를 조회해보세요</div>
+          <div className="empty-state__icon">
+            <span className="css-icon icon-bank" style={{ width: 28, height: 28 }} />
+          </div>
+          <div className="empty-state__title">등록된 계좌가 없습니다</div>
+          <div className="empty-state__desc">계좌를 개설하거나 기존 계좌를 조회해보세요</div>
         </div>
       )}
 
       {/* 토스트 */}
-      {toast && (
-        <div className="toast animate-slide">{toast}</div>
-      )}
+      {toast && <div className="toast">{toast}</div>}
     </div>
   )
 }

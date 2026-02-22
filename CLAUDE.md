@@ -11,7 +11,7 @@ Java 21, Spring Boot 3.4, Spring Kafka, Spring Data JPA, MySQL 8, Redis, Docker,
 
 | 서비스 | 포트 | DB | 패키지 |
 |--------|------|-----|--------|
-| account-service | 8081 | account_db (MySQL :3306) | `com.quicktransfer.account` |
+| account-service | 8081 | account_db (MySQL :3308) | `com.quicktransfer.account` |
 | transfer-service | 8082 | transfer_db (MySQL :3307) | `com.quicktransfer.transfer` |
 | notification-service | 8083 | Redis :6379 | `com.quicktransfer.notification` |
 | frontend | 3000 | - | React SPA |
