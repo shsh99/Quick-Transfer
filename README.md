@@ -3,6 +3,30 @@
 토스/카카오페이의 축소 버전 **실시간 송금 시스템**입니다.
 Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학습 프로젝트입니다.
 
+## 스크린샷
+
+### 정상 송금 흐름
+
+<div align="center">
+
+| 홈 (내 자산) | 송금 처리중 | 송금 완료 | 실시간 알림 |
+|:---:|:---:|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/f29d367b-6b96-4534-8357-52922b6876c8" width="200" /> | <img src="https://github.com/user-attachments/assets/83d1eebd-0e54-433b-a536-820780c7e402" width="200" /> | <img src="https://github.com/user-attachments/assets/2a8caf82-64e0-4665-915f-52db06fad029" width="200" /> | <img src="https://github.com/user-attachments/assets/cea5087c-7de6-4ca8-9992-4d38aec5e0d8" width="200" /> |
+| 계좌 목록 및 총 자산 조회 | Saga 패턴 진행 상태 | 출금→입금 완료 (1초 이내) | SSE 기반 실시간 알림 |
+
+</div>
+
+### 실패 및 보상 트랜잭션
+
+<div align="center">
+
+| 송금 실패 (잔액 부족) | 실패 알림 |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/211b8189-ed5f-4cb8-aad2-c205fa49534c" width="200" /> | <img src="https://github.com/user-attachments/assets/163ba658-9161-4305-97b4-0992c73f6170" width="200" /> |
+| 잔액 부족 시 Saga 보상 트랜잭션 처리 | 실패 사유와 함께 실시간 알림 전달 |
+
+</div>
+
 ## 아키텍처
 
 ```
@@ -38,11 +62,13 @@ Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학�
 ## 빠른 시작
 
 ### 1. 인프라 실행
+
 ```bash
 docker-compose up mysql-account mysql-transfer redis zookeeper kafka -d
 ```
 
 ### 2. 백엔드 서비스 실행 (터미널 3개)
+
 ```bash
 ./gradlew :account-service:bootRun
 ./gradlew :transfer-service:bootRun
@@ -50,16 +76,19 @@ docker-compose up mysql-account mysql-transfer redis zookeeper kafka -d
 ```
 
 ### 3. 프론트엔드 실행
+
 ```bash
 cd frontend && npm install && npm run dev
 ```
 
 ### 전체 Docker Compose (한 번에 실행)
+
 ```bash
 docker-compose up --build
 ```
 
 ### Kubernetes 배포
+
 ```bash
 kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/secret.yaml -f k8s/configmap.yaml
