@@ -1,5 +1,7 @@
 package com.quicktransfer.account.domain;
 
+import com.quicktransfer.common.exception.BusinessException;
+import com.quicktransfer.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,14 +47,22 @@ public class Account {
         ACTIVE, FROZEN, CLOSED
     }
 
+    private void validateActive() {
+        if (this.status != AccountStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.ACCOUNT_FROZEN);
+        }
+    }
+
     public void debit(BigDecimal amount) {
+        validateActive();
         if (this.balance.compareTo(amount) < 0) {
-            throw new IllegalStateException("잔액이 부족합니다");
+            throw new BusinessException(ErrorCode.INSUFFICIENT_BALANCE);
         }
         this.balance = this.balance.subtract(amount);
     }
 
     public void credit(BigDecimal amount) {
+        validateActive();
         this.balance = this.balance.add(amount);
     }
 }

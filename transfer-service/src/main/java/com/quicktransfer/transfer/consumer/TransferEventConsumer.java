@@ -25,7 +25,11 @@ public class TransferEventConsumer {
     @Transactional
     public void handleDebitCompleted(DebitCompletedEvent event) {
         log.info("출금 완료 수신: transferId={}", event.getTransferId());
-        transferRepository.findByTransferId(event.getTransferId()).ifPresent(transfer -> {
+        transferRepository.findByTransferIdForUpdate(event.getTransferId()).ifPresent(transfer -> {
+            if (!transfer.canTransitionTo(TransferStatus.DEBITED)) {
+                log.info("이미 처리된 이벤트 (현재 상태={}): transferId={}", transfer.getStatus(), event.getTransferId());
+                return;
+            }
             transfer.updateStatus(TransferStatus.DEBITED);
         });
     }
@@ -34,7 +38,11 @@ public class TransferEventConsumer {
     @Transactional
     public void handleDebitFailed(DebitFailedEvent event) {
         log.info("출금 실패 수신: transferId={}, reason={}", event.getTransferId(), event.getReason());
-        transferRepository.findByTransferId(event.getTransferId()).ifPresent(transfer -> {
+        transferRepository.findByTransferIdForUpdate(event.getTransferId()).ifPresent(transfer -> {
+            if (!transfer.canTransitionTo(TransferStatus.FAILED)) {
+                log.info("이미 처리된 이벤트 (현재 상태={}): transferId={}", transfer.getStatus(), event.getTransferId());
+                return;
+            }
             transfer.fail(event.getReason());
 
             eventProducer.sendTransferFailed(TransferFailedEvent.builder()
@@ -53,7 +61,11 @@ public class TransferEventConsumer {
     @Transactional
     public void handleCreditCompleted(CreditCompletedEvent event) {
         log.info("입금 완료 수신: transferId={}", event.getTransferId());
-        transferRepository.findByTransferId(event.getTransferId()).ifPresent(transfer -> {
+        transferRepository.findByTransferIdForUpdate(event.getTransferId()).ifPresent(transfer -> {
+            if (!transfer.canTransitionTo(TransferStatus.SUCCESS)) {
+                log.info("이미 처리된 이벤트 (현재 상태={}): transferId={}", transfer.getStatus(), event.getTransferId());
+                return;
+            }
             transfer.updateStatus(TransferStatus.SUCCESS);
 
             eventProducer.sendTransferCompleted(TransferCompletedEvent.builder()
@@ -71,7 +83,11 @@ public class TransferEventConsumer {
     @Transactional
     public void handleCreditFailed(CreditFailedEvent event) {
         log.info("입금 실패 수신: transferId={}, reason={}", event.getTransferId(), event.getReason());
-        transferRepository.findByTransferId(event.getTransferId()).ifPresent(transfer -> {
+        transferRepository.findByTransferIdForUpdate(event.getTransferId()).ifPresent(transfer -> {
+            if (!transfer.canTransitionTo(TransferStatus.FAILED)) {
+                log.info("이미 처리된 이벤트 (현재 상태={}): transferId={}", transfer.getStatus(), event.getTransferId());
+                return;
+            }
             transfer.fail("입금 실패: " + event.getReason());
 
             eventProducer.sendTransferFailed(TransferFailedEvent.builder()
