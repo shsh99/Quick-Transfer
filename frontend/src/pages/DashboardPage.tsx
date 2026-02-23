@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { createAccount, getAllAccounts, getAccount } from '../api/accountApi'
+import { useNotifications } from '../context/NotificationContext'
 import type { Account } from '../types/api'
 
 function DashboardPage() {
@@ -11,6 +12,8 @@ function DashboardPage() {
   const [showSearch, setShowSearch] = useState(false)
   const [loadingAccounts, setLoadingAccounts] = useState(true)
   const [toast, setToast] = useState('')
+  const { subscribe: sseSubscribe, accountNumber: subscribedAccount } = useNotifications()
+  const autoSubscribedRef = useRef(false)
 
   useEffect(() => {
     getAllAccounts()
@@ -18,6 +21,14 @@ function DashboardPage() {
       .catch(() => {})
       .finally(() => setLoadingAccounts(false))
   }, [])
+
+  // 계좌가 로드되면 첫 번째 계좌로 자동 SSE 구독 (아직 구독 전일 때만)
+  useEffect(() => {
+    if (accounts.length > 0 && !subscribedAccount && !autoSubscribedRef.current) {
+      autoSubscribedRef.current = true
+      sseSubscribe(accounts[0].accountNumber)
+    }
+  }, [accounts, subscribedAccount, sseSubscribe])
 
   const showToast = (msg: string) => {
     setToast(msg)
@@ -184,8 +195,8 @@ function DashboardPage() {
         </div>
       )}
 
-      {/* 토스트 */}
-      {toast && <div className="toast">{toast}</div>}
+      {/* 로컬 토스트 */}
+      {toast && <div className="local-toast">{toast}</div>}
     </div>
   )
 }

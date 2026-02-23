@@ -1,11 +1,32 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
-import { NotificationProvider } from './context/NotificationContext'
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { NotificationProvider, useNotifications } from './context/NotificationContext'
 import Navbar from './components/common/Navbar'
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
 import TransferPage from './pages/TransferPage'
 import TransferDetailPage from './pages/TransferDetailPage'
 import NotificationsPage from './pages/NotificationsPage'
+
+function ToastNotification() {
+  const { toast, dismissToast } = useNotifications()
+  const navigate = useNavigate()
+
+  if (!toast) return null
+
+  const isSuccess = toast.type === 'TRANSFER_COMPLETED'
+
+  return (
+    <div className={`toast toast--visible ${isSuccess ? 'toast--success' : 'toast--error'}`} onClick={() => { dismissToast(); navigate('/notifications') }}>
+      <div className="toast__icon">
+        <span className={`css-icon ${isSuccess ? 'icon-check' : 'icon-close'}`} />
+      </div>
+      <div className="toast__body">
+        <div className="toast__title">{isSuccess ? '송금 완료' : '송금 실패'}</div>
+        <div className="toast__message">{toast.message}</div>
+      </div>
+    </div>
+  )
+}
 
 function AppContent() {
   const location = useLocation()
@@ -28,6 +49,7 @@ function AppContent() {
           </Routes>
         </main>
       )}
+      {!isLanding && <ToastNotification />}
     </div>
   )
 }
