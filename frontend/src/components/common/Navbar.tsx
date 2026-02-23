@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 function Navbar() {
   return (
     <nav className="navbar">
-      <NavItem to="/" iconClass="nav-icon-home" label="홈" />
+      <NavItem to="/dashboard" iconClass="nav-icon-home" label="홈" />
       <NavItem to="/transfer" iconClass="nav-icon-send" label="송금" />
       <NavItem to="/notifications" iconClass="nav-icon-bell" label="알림" />
     </nav>
@@ -14,7 +14,7 @@ function NavItem({ to, iconClass, label }: { to: string; iconClass: string; labe
   return (
     <NavLink
       to={to}
-      end={to === '/'}
+      end={to === '/dashboard'}
       className={({ isActive }) =>
         `navbar-item${isActive ? ' navbar-item--active' : ''}`
       }

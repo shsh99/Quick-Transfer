@@ -1203,3 +1203,217 @@ select {
 .w-full { width: 100%; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
+
+/* 25. Landing Page */
+.landing {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  min-height: 100vh;
+  animation: fadeIn var(--duration-slow) var(--ease-out);
+}
+
+/* Hero */
+.landing-hero {
+  text-align: center;
+  padding: var(--space-12) 0 var(--space-10);
+}
+
+.landing-hero__badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--primary-50);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-5);
+  letter-spacing: -0.01em;
+}
+
+.landing-hero__title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  color: var(--gray-900);
+  margin-bottom: var(--space-4);
+}
+
+.landing-hero__desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray-500);
+  margin-bottom: var(--space-8);
+}
+
+.landing-hero__cta {
+  display: inline-flex;
+  padding: 16px 48px;
+  font-size: 16px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  width: auto;
+}
+
+/* Features */
+.landing-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-10);
+}
+
+.landing-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--gray-0);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-feature__icon {
+  flex-shrink: 0;
+}
+
+.landing-feature__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 2px;
+  letter-spacing: -0.02em;
+}
+
+.landing-feature__desc {
+  font-size: 13px;
+  color: var(--gray-500);
+  line-height: 1.5;
+}
+
+/* Architecture */
+.landing-arch {
+  padding-bottom: var(--space-10);
+}
+
+.landing-arch__title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.02em;
+}
+
+.landing-arch__flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  background: var(--gray-0);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-arch__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.landing-arch__node--kafka {
+  padding: var(--space-3) var(--space-4);
+  background: var(--gray-900);
+  border-radius: var(--radius-md);
+  color: var(--gray-0);
+}
+
+.landing-arch__node--kafka .landing-arch__node-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.landing-arch__node--kafka .landing-arch__node-port {
+  color: var(--gray-400);
+}
+
+.landing-arch__node-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.landing-arch__node-port {
+  font-size: 10px;
+  color: var(--gray-400);
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.landing-arch__arrow {
+  color: var(--gray-300);
+  display: flex;
+  align-items: center;
+}
+
+/* Tech Stack */
+.landing-stack {
+  padding-bottom: var(--space-10);
+}
+
+.landing-stack__title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.02em;
+}
+
+.landing-stack__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.landing-stack__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--gray-0);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-100);
+}
+
+.landing-stack__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.landing-stack__category {
+  font-size: 11px;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+/* CTA Section */
+.landing-cta {
+  text-align: center;
+  padding: var(--space-10) 0 var(--space-12);
+  border-top: 1px solid var(--gray-100);
+}
+
+.landing-cta__title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.landing-cta__desc {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-bottom: var(--space-6);
+}
