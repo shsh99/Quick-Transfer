@@ -73,7 +73,7 @@ quick-transfer/
 ├── docker-compose.yml         로컬 인프라 + 서비스 통합 실행
 ├── build.gradle               루트 빌드 설정
 ├── settings.gradle            모듈 정의
-└── CLAUDE.md                  AI 작업 가이드
+└── AGENTS.md                  AI 작업 가이드
 ```
 
 ---

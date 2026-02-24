@@ -126,6 +126,6 @@ quick-transfer/
 
 ## 문서
 
-- [CLAUDE.md](CLAUDE.md) - AI 작업 가이드
+- [AGENTS.md](AGENTS.md) - AI 작업 가이드
 - [docs/project-structure.md](docs/project-structure.md) - 프로젝트 구조 상세 설명
 - [docs/mcdonalds-principle.md](docs/mcdonalds-principle.md) - 맥도날드 원칙 (AI 시대 개발 매뉴얼)
