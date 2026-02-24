@@ -11,4 +11,4 @@ export const getTransfer = (transferId: string) =>
   api.get<ApiResponse<Transfer>>(`/transfers/${transferId}`)
 
 export const getTransfers = (senderAccount: string, page = 0) =>
-  api.get<ApiResponse<{ content: Transfer[] }>>(`/transfers?senderAccount=${senderAccount}&page=${page}`)
+  api.get<ApiResponse<{ content: Transfer[]; last: boolean }>>(`/transfers?senderAccount=${senderAccount}&page=${page}`)

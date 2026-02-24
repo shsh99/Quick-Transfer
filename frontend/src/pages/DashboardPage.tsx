@@ -148,7 +148,12 @@ function DashboardPage() {
         <div className="card">
           <p className="section-title">내 계좌</p>
           {accounts.map(account => (
-            <div className="list-item" key={account.accountNumber}>
+            <Link
+              to={`/account/${account.accountNumber}`}
+              className="list-item"
+              key={account.accountNumber}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="account-avatar">
                 {account.ownerName.charAt(0)}
               </div>
@@ -164,7 +169,7 @@ function DashboardPage() {
                   {account.status === 'ACTIVE' ? '정상' : account.status}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

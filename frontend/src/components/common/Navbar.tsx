@@ -5,6 +5,7 @@ function Navbar() {
     <nav className="navbar">
       <NavItem to="/dashboard" iconClass="nav-icon-home" label="홈" />
       <NavItem to="/transfer" iconClass="nav-icon-send" label="송금" />
+      <NavItem to="/history" iconClass="nav-icon-history" label="내역" />
       <NavItem to="/notifications" iconClass="nav-icon-bell" label="알림" />
     </nav>
   )

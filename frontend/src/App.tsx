@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage'
 import TransferPage from './pages/TransferPage'
 import TransferDetailPage from './pages/TransferDetailPage'
 import NotificationsPage from './pages/NotificationsPage'
+import AccountDetailPage from './pages/AccountDetailPage'
+import HistoryPage from './pages/HistoryPage'
 
 function ToastNotification() {
   const { toast, dismissToast } = useNotifications()
@@ -43,8 +45,10 @@ function AppContent() {
         <main className="container">
           <Routes>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/account/:accountNumber" element={<AccountDetailPage />} />
             <Route path="/transfer" element={<TransferPage />} />
             <Route path="/transfer/:transferId" element={<TransferDetailPage />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
           </Routes>
         </main>

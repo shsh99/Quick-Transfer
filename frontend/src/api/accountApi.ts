@@ -11,4 +11,4 @@ export const getAccount = (accountNumber: string) =>
   api.get<ApiResponse<Account>>(`/accounts/${accountNumber}`)
 
 export const getTransactions = (accountNumber: string, page = 0) =>
-  api.get<ApiResponse<{ content: TransactionLog[] }>>(`/accounts/${accountNumber}/transactions?page=${page}`)
+  api.get<ApiResponse<{ content: TransactionLog[]; last: boolean }>>(`/accounts/${accountNumber}/transactions?page=${page}`)
