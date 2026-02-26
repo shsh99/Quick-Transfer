@@ -129,3 +129,9 @@ quick-transfer/
 - [AGENTS.md](AGENTS.md) - AI 작업 가이드
 - [docs/project-structure.md](docs/project-structure.md) - 프로젝트 구조 상세 설명
 - [docs/mcdonalds-principle.md](docs/mcdonalds-principle.md) - 맥도날드 원칙 (AI 시대 개발 매뉴얼)
+
+## 맥도날드 원칙 요약
+
+- PRD 작성 후 AI 리뷰로 기존 기능 재사용 여부, 수정 범위, 신규 개발 필요를 점검한다.
+- 업무 요청은 PRD 7단계 산출물을 프롬프트 폴더에 정리한 뒤 진행한다.
+- 디자인/기획 검증은 AI 가상 FGI 시뮬레이션과 PRD·CS 데이터 축적으로 보완한다.
