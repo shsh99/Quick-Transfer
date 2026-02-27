@@ -10,7 +10,12 @@ import java.util.Map;
 import java.util.Set;
 
 @Entity
-@Table(name = "transfers")
+@Table(
+        name = "transfers",
+        indexes = {
+                @Index(name = "idx_transfer_sender_created", columnList = "sender_account, created_at")
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

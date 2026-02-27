@@ -8,7 +8,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transaction_log")
+@Table(
+        name = "transaction_log",
+        indexes = {
+                @Index(name = "idx_transaction_log_account_created", columnList = "account_id, created_at")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_transaction_log_transfer_type", columnNames = {"transfer_id", "type"})
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

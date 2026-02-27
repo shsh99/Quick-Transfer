@@ -68,6 +68,7 @@ quick-transfer/
 │
 ├── docs/                      [문서]
 │   ├── mcdonalds-principle.md 맥도날드 원칙 설명
+│   ├── db-migrations.md       DB 마이그레이션 가이드
 │   └── project-structure.md   이 문서
 │
 ├── docker-compose.yml         로컬 인프라 + 서비스 통합 실행

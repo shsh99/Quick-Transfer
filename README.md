@@ -124,11 +124,17 @@ quick-transfer/
 | Transfer | GET | `/api/transfers?senderAccount=xxx` | 송금 목록 |
 | Notification | GET | `/api/notifications/{accountNumber}/subscribe` | SSE 알림 구독 |
 
+## 변경 사항 메모
+
+- 요청 DTO에 Bean Validation이 적용되어 잘못된 요청은 `C002` 에러로 반환됩니다.
+- 거래내역 응답은 엔티티 대신 DTO로 반환됩니다.
+
 ## 문서
 
 - [AGENTS.md](AGENTS.md) - AI 작업 가이드
 - [docs/project-structure.md](docs/project-structure.md) - 프로젝트 구조 상세 설명
 - [docs/mcdonalds-principle.md](docs/mcdonalds-principle.md) - 맥도날드 원칙 (AI 시대 개발 매뉴얼)
+- [docs/db-migrations.md](docs/db-migrations.md) - DB 마이그레이션 가이드
 
 ## 맥도날드 원칙 요약
 
