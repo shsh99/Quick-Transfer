@@ -28,7 +28,6 @@ export interface Transfer {
 
 export interface TransactionLog {
   id: number
-  accountId: number
   type: 'DEBIT' | 'CREDIT' | 'ROLLBACK'
   amount: number
   balanceBefore: number

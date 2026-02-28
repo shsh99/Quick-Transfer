@@ -21,6 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class TransferService {
 
     private final TransferRepository transferRepository;
@@ -61,13 +62,11 @@ public class TransferService {
         return transfer;
     }
 
-    @Transactional(readOnly = true)
     public Transfer getTransfer(String transferId) {
         return transferRepository.findByTransferId(transferId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TRANSFER_NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
     public Page<Transfer> getTransfers(String senderAccount, Pageable pageable) {
         return transferRepository.findBySenderAccountOrderByCreatedAtDesc(senderAccount, pageable);
     }

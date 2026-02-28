@@ -38,7 +38,7 @@ quick-transfer/
 │       ├── producer/          Kafka: transfer-requested, transfer-completed/failed 발행
 │       └── exception/         GlobalExceptionHandler
 │
-├── notification-service/      [알림 서비스] 포트 8083, Redis
+├── notification-service/      [알림 서비스] 포트 8083, Redis Pub/Sub
 │   └── src/main/java/com/quicktransfer/notification/
 │       ├── service/           SseEmitterService (SSE 연결 관리)
 │       ├── controller/        SSE 구독 엔드포인트 1개
@@ -137,7 +137,7 @@ quick-transfer/
 | Spring Boot 3.4 | 서버 프레임워크 | Java 21 지원, 학습 자료 풍부 |
 | MySQL 8 | 데이터 저장 | 서비스별 독립 DB (Database per Service 패턴) |
 | Kafka | 서비스간 비동기 메시지 | Choreography Saga 패턴 구현 |
-| Redis | SSE 연결 관리 | Notification Service에서 인메모리 매핑 |
+| Redis | Pub/Sub fan-out + SSE 연결 관리 | Notification Service 멀티 인스턴스 알림 동기화 |
 | Docker | 컨테이너 패키징 | 로컬 환경 통일 |
 | Kubernetes | 컨테이너 오케스트레이션 | HPA 자동 스케일링 학습 |
 | Prometheus + Grafana | 모니터링 | Actuator 메트릭 수집 + 시각화 |

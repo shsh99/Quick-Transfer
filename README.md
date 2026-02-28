@@ -36,7 +36,7 @@ Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학�
                               │                              │
                               └─── Kafka ───> [Notification Service]
                                                SSE 실시간 알림
-                                               :8083 (Redis)
+                                               :8083 (Redis Pub/Sub)
 ```
 
 **핵심 패턴**: Choreography Saga - 서비스 간 직접 호출 없이 Kafka 이벤트로만 통신
@@ -53,7 +53,7 @@ Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학�
 | Java 21 + Spring Boot 3.4 | 백엔드 서비스 |
 | Apache Kafka | 서비스 간 비동기 메시징 (Saga) |
 | MySQL 8 | 서비스별 독립 DB |
-| Redis | SSE 연결 관리 |
+| Redis | Notification fan-out (Pub/Sub) + SSE 확장 |
 | React 18 + TypeScript + Vite | 프론트엔드 SPA |
 | Docker + Kubernetes | 컨테이너 배포 + HPA 자동 스케일링 |
 | Prometheus + Grafana | 모니터링 |
@@ -117,6 +117,7 @@ quick-transfer/
 | 서비스 | Method | Path | 설명 |
 |--------|--------|------|------|
 | Account | POST | `/api/accounts` | 계좌 생성 |
+| Account | GET | `/api/accounts` | 계좌 목록 조회 |
 | Account | GET | `/api/accounts/{accountNumber}` | 계좌 조회 |
 | Account | GET | `/api/accounts/{accountNumber}/transactions` | 거래 내역 |
 | Transfer | POST | `/api/transfers` | 송금 요청 |
@@ -128,6 +129,7 @@ quick-transfer/
 
 - 요청 DTO에 Bean Validation이 적용되어 잘못된 요청은 `C002` 에러로 반환됩니다.
 - 거래내역 응답은 엔티티 대신 DTO로 반환됩니다.
+- Notification 서비스는 Redis Pub/Sub으로 멀티 인스턴스 SSE 알림 fan-out을 보장합니다.
 
 ## 문서
 
@@ -135,6 +137,7 @@ quick-transfer/
 - [docs/project-structure.md](docs/project-structure.md) - 프로젝트 구조 상세 설명
 - [docs/mcdonalds-principle.md](docs/mcdonalds-principle.md) - 맥도날드 원칙 (AI 시대 개발 매뉴얼)
 - [docs/db-migrations.md](docs/db-migrations.md) - DB 마이그레이션 가이드
+- [docs/verification-checklist.md](docs/verification-checklist.md) - 기능 검증 체크리스트
 
 ## 맥도날드 원칙 요약
 

@@ -22,6 +22,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class AccountService {
 
     private final AccountRepository accountRepository;
@@ -41,18 +42,15 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    @Transactional(readOnly = true)
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Account getAccount(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
     public Page<TransactionLog> getTransactions(String accountNumber, Pageable pageable) {
         Account account = getAccount(accountNumber);
         return transactionLogRepository.findByAccountIdOrderByCreatedAtDesc(account.getId(), pageable);

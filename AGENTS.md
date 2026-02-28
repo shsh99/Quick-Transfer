@@ -13,7 +13,7 @@ Java 21, Spring Boot 3.4, Spring Kafka, Spring Data JPA, MySQL 8, Redis, Docker,
 |--------|------|-----|--------|
 | account-service | 8081 | account_db (MySQL :3308) | `com.quicktransfer.account` |
 | transfer-service | 8082 | transfer_db (MySQL :3307) | `com.quicktransfer.transfer` |
-| notification-service | 8083 | Redis :6379 | `com.quicktransfer.notification` |
+| notification-service | 8083 | Redis :6379 (Pub/Sub) | `com.quicktransfer.notification` |
 | frontend | 3000 | - | React SPA |
 
 DB 공통: user=`qt_user`, password=`qt_password`, Kafka: `localhost:9092`
@@ -24,6 +24,7 @@ DB 공통: user=`qt_user`, password=`qt_password`, Kafka: `localhost:9092`
 | Method | Path | 설명 |
 |--------|------|------|
 | POST | `/api/accounts` | 계좌 생성. Body: `{ownerName}` → `ApiResponse<AccountResponse>` |
+| GET | `/api/accounts` | 계좌 목록 조회 → `ApiResponse<List<AccountResponse>>` |
 | GET | `/api/accounts/{accountNumber}` | 계좌 조회 → `ApiResponse<AccountResponse>` |
 | GET | `/api/accounts/{accountNumber}/transactions` | 거래 내역 (페이징) → `ApiResponse<Page<TransactionLog>>` |
 
@@ -199,3 +200,4 @@ docker-compose up --build
 ## 참고 문서
 - `docs/project-structure.md` — 프로젝트 구조 상세 설명
 - `docs/mcdonalds-principle.md` — 맥도날드 원칙 상세
+- `docs/verification-checklist.md` — 기능 검증 체크리스트
