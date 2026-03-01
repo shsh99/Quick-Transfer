@@ -30,13 +30,10 @@ Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학�
 ## 아키텍처
 
 ```
-[Frontend]  ──HTTP──>  [Transfer Service]  ──Kafka──>  [Account Service]
-   React+TS              송금 생성/상태관리              출금/입금/롤백
-   :3000                 :8082 (transfer_db)            :8081 (account_db)
-                              │                              │
-                              └─── Kafka ───> [Notification Service]
-                                               SSE 실시간 알림
-                                               :8083 (Redis Pub/Sub)
+[Frontend :3000]
+   ├── HTTP ──> [Account Service :8081 (account_db)]
+   ├── HTTP ──> [Transfer Service :8082 (transfer_db)] ──Kafka──> [Account Service]
+   └── SSE  ──> [Notification Service :8083 (Redis Pub/Sub)] <──Kafka──
 ```
 
 **핵심 패턴**: Choreography Saga - 서비스 간 직접 호출 없이 Kafka 이벤트로만 통신
@@ -57,7 +54,7 @@ Kafka, MSA(마이크로서비스), Kubernetes를 직접 체험하기 위한 학�
 | React 18 + TypeScript + Vite | 프론트엔드 SPA |
 | Docker + Kubernetes | 컨테이너 배포 + HPA 자동 스케일링 |
 | Prometheus + Grafana | 모니터링 |
-| k6 | 부하 테스트 (동시 1,000건 송금) |
+| k6 | 부하 테스트 (최대 동시 200 VU 스파이크) |
 
 ## 빠른 시작
 
